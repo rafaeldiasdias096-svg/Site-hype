@@ -9,7 +9,7 @@
 <link rel="preload" as="image" href="img/capa.webp" fetchpriority="high">
 <meta property="og:title" content="NOHYPE — os produtos mais hypados do mercado">
 <meta property="og:description" content="Streetwear em Perdizes-MG. Frete grátis a partir de R$ 199. Pague no Pix e peça pelo WhatsApp.">
-<meta property="og:image" content="img/capa.webp">
+<meta property="og:image" content="https://nohype-store.netlify.app/img/capa.webp">
 <meta property="og:type" content="website">
 </head>
 <body>
@@ -896,6 +896,17 @@ function parse(r){
 }
 let PRODUCTS=window.NH_SNAPSHOT.map(parse);
 const byId=id=>PRODUCTS.find(p=>p.id===id);
+/* ---------- link próprio por produto (?p=slug) ---------- */
+const slugify=s=>String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,90);
+const slugOf=p=>p.slug||(p.slug=slugify(p.name)+"-"+String(p.id).slice(0,4));
+const bySlug=s=>PRODUCTS.find(p=>slugOf(p)===s)||PRODUCTS.find(p=>slugOf(p).startsWith(s));
+const SHARE_PAGES=true; // no site publicado vira true: /p/<slug>/ tem prévia com foto pro WhatsApp/Instagram
+const productURL=p=>SHARE_PAGES&&/^https?:/.test(location.protocol)?location.origin+"/p/"+slugOf(p)+"/":location.origin+location.pathname+"?p="+slugOf(p);
+function setURL(p){try{const u=new URL(location.href);p?u.searchParams.set("p",slugOf(p)):u.searchParams.delete("p");history.replaceState(null,"",u.pathname+u.search+u.hash)}catch(e){}}
+/* ---------- Meta Pixel (fica desligado até preencher o ID) ---------- */
+const PIXEL_ID="";
+if(PIXEL_ID&&!window.fbq){!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init",PIXEL_ID);fbq("track","PageView")}
+const track=(ev,d)=>{try{window.fbq&&fbq("track",ev,{currency:"BRL",...d})}catch(e){}};
 
 /* ---------- ilustração da peça (até termos fotos) ---------- */
 function lum(hex){const n=parseInt(hex.slice(1),16);return (0.299*(n>>16)+0.587*(n>>8&255)+0.114*(n&255))/255}
@@ -1220,8 +1231,14 @@ function openProduct(id,from){
     <button class="btn" id="pmAdd">Adicionar à sacola</button></div>
     <a class="btn ghost" id="pmBuy" href="#" target="_blank" rel="noopener">Comprar agora no WhatsApp ↗</a>`
     :`<a class="btn red" href="${waAsk}" target="_blank" rel="noopener">Avise-me quando voltar ↗</a>`}
+    <button class="btn ghost" id="pmShare" type="button" style="font-size:12px;padding:10px 14px">Compartilhar esta peça ↗</button>
     <div class="note">Cor: ${esc(p.cols.map(c=>c.fam).join(" / "))} · Marca: ${esc(p.brand)} · ${p.img?"Foto real da peça.":"Ilustração da peça. Foto real em breve."}</div>
    </div>`;
+  setURL(p); track("ViewContent",{content_ids:[p.id],content_name:p.name,content_type:"product",value:p.pix});
+  $("#pmShare").onclick=async()=>{const url=productURL(p);
+    try{if(navigator.share){await navigator.share({title:p.name+" · NOHYPE",text:`${p.name} — ${brl(p.pix)} no Pix`,url});return}}catch(e){if(e&&e.name==="AbortError")return}
+    try{await navigator.clipboard.writeText(url);toast("Link copiado")}catch(e){prompt("Copie o link:",url)}};
+  if(p.ok)$("#pmBuy").addEventListener("click",()=>track("Contact",{content_ids:[p.id],value:p.pix*pmQty}));
   $$("#pm .thumbs button").forEach(b=>b.onclick=()=>{$("#pmMain").innerHTML=views[+b.dataset.v];$("#pmMain").classList.toggle("has-photo",!!p.img);$$("#pm .thumbs button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
   if(p.ok){
     const syncBuy=()=>{$("#pmBuy").href=`https://wa.me/${WA}?text=${encodeURIComponent(`Oi! Quero comprar:\n• ${pmQty}x ${p.name}${pmSize?` (tam. ${pmSize})`:""} — ${brl(p.pix*pmQty)} no Pix`)}`};
@@ -1242,6 +1259,7 @@ function addToCart(id,size,qty){
   const ex=CART.find(i=>i.id===id&&i.size===size);
   ex?ex.qty=Math.min(9,ex.qty+qty):CART.push({id,size,qty});
   saveCart(); toast(`${p.model} (${size}) na sacola`);
+  track("AddToCart",{content_ids:[p.id],content_name:p.name,content_type:"product",value:p.pix*qty});
 }
 function renderCart(){
   CART=CART.filter(i=>byId(i.id));
@@ -1306,6 +1324,7 @@ $("#checkout").addEventListener("click",()=>{
   rpOrder={code:"NH"+Date.now().toString(36).slice(-5).toUpperCase(),nome:$("#cName").value.trim(),tel:$("#cTel").value.trim(),items,subtotal,total};
   $("#rpPaper").innerHTML=receiptHTML(rpOrder);
   $("#rpTotal").textContent=brl(total);
+  track("InitiateCheckout",{content_ids:items.map(i=>i.product_id),num_items:items.reduce((a,i)=>a+i.qty,0),value:total});
   $("#rpSend").href=`https://wa.me/${WA}?text=${encodeURIComponent(waMessage()+`\n\nPedido #${rpOrder.code}`)}`;
   closeAll(true); $("#scrim").classList.add("on"); $("#rpWrap").classList.add("on");
   rpTimers.forEach(clearTimeout); rpStage("processing");
@@ -1316,8 +1335,14 @@ $("#rpBack").onclick=()=>{rpClose();openDrawer("#cart")};
 $("#rpSend").addEventListener("click",()=>{
   if(!rpOrder)return;
   const o=rpOrder;
-  try{fetch(`${SB_URL}/rest/v1/store_orders`,{method:"POST",keepalive:true,headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,"Content-Type":"application/json",Prefer:"return=minimal"},
-    body:JSON.stringify({customer_nome:o.nome||null,customer_telefone:o.tel||null,items:o.items,subtotal:+o.subtotal.toFixed(2),discount_value:+(o.subtotal-o.total).toFixed(2),shipping_value:0,total:+o.total.toFixed(2),status:"novo"})}).catch(()=>{})}catch(err){}
+  track("Lead",{content_ids:o.items.map(i=>i.product_id),value:o.total});
+  const H={apikey:SB_KEY,"Content-Type":"application/json"};
+  const legacy=()=>fetch(`${SB_URL}/rest/v1/store_orders`,{method:"POST",keepalive:true,headers:{...H,Authorization:`Bearer ${SB_KEY}`,Prefer:"return=minimal"},
+    body:JSON.stringify({customer_nome:o.nome||"Cliente do site",customer_telefone:o.tel||"-",items:o.items,subtotal:+o.subtotal.toFixed(2),discount_value:+(o.subtotal-o.total).toFixed(2),shipping_value:0,total:+o.total.toFixed(2),status:"novo"})}).catch(()=>{});
+  // pedido validado no servidor (preço e estoque conferidos lá); se a função falhar, cai no caminho antigo
+  try{fetch(`${SB_URL}/functions/v1/create-order`,{method:"POST",keepalive:true,headers:H,
+    body:JSON.stringify({code:o.code,nome:o.nome,tel:o.tel,items:o.items.map(i=>({product_id:i.product_id,size:i.size,qty:i.qty}))})})
+    .then(r=>{if(!r.ok&&r.status>=500)legacy()}).catch(legacy)}catch(err){}
   CART=[];saveCart();rpOrder=null;
   setTimeout(()=>{rpClose();toast("Pedido enviado pro WhatsApp")},400);
 });
@@ -1334,7 +1359,7 @@ $("#sq").addEventListener("input",e=>{
 
 /* ---------- abrir/fechar ---------- */
 function openDrawer(sel){closeAll(true);$(sel).classList.add("on");$(sel).setAttribute("aria-hidden","false");$("#scrim").classList.add("on");setTimeout(()=>(sel==="#cart"?$(sel).querySelector("[data-close]"):($(sel).querySelector("input")||$(sel).querySelector("button"))).focus({preventScroll:true}),300)}
-function closeAll(keep){$$(".drawer").forEach(d=>{d.classList.remove("on");d.setAttribute("aria-hidden","true")});$("#modal").classList.remove("on");if(!keep)$("#scrim").classList.remove("on");if(!keep&&lastFocus){try{lastFocus.focus()}catch(e){}}}
+function closeAll(keep){if($("#modal").classList.contains("on"))setURL(null);$$(".drawer").forEach(d=>{d.classList.remove("on");d.setAttribute("aria-hidden","true")});$("#modal").classList.remove("on");if(!keep)$("#scrim").classList.remove("on");if(!keep&&lastFocus){try{lastFocus.focus()}catch(e){}}}
 $("#openCart").onclick=()=>openDrawer("#cart");
 $("#openSearch").onclick=()=>openDrawer("#searchD");
 $("#scrim").onclick=()=>{if($("#rpWrap").classList.contains("on")){if($("#rp").dataset.stage==="complete")rpClose();return}closeAll()};
@@ -1360,6 +1385,8 @@ let tT;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on
 /* ---------- render ---------- */
 function renderAll(){renderHero();renderBrands();renderRails();renderLine();renderFeat();renderFilterOpts();renderGrid();renderCart()}
 renderAll(); goHero(0);
+(()=>{try{const s=new URLSearchParams(location.search).get("p");if(!s)return;const p=bySlug(slugify(s));
+  if(p)setTimeout(()=>openProduct(p.id),350);else setURL(null)}catch(e){}})();
 $("#yr").textContent=new Date().getFullYear();
 
 /* ---------- estoque ao vivo (Supabase) ---------- */
