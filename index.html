@@ -1343,7 +1343,7 @@ $("#rpSend").addEventListener("click",()=>{
   track("Lead",{content_ids:o.items.map(i=>i.product_id),value:o.total});
   const H={apikey:SB_KEY,"Content-Type":"application/json"};
   const legacy=()=>fetch(`${SB_URL}/rest/v1/store_orders`,{method:"POST",keepalive:true,headers:{...H,Authorization:`Bearer ${SB_KEY}`,Prefer:"return=minimal"},
-    body:JSON.stringify({customer_nome:o.nome||"Cliente do site",customer_telefone:o.tel||"-",items:o.items,subtotal:+o.subtotal.toFixed(2),discount_value:+(o.subtotal-o.total).toFixed(2),shipping_value:0,total:+o.total.toFixed(2),status:"novo"})}).catch(()=>{});
+    body:JSON.stringify({customer_nome:o.nome||"Cliente do site",customer_telefone:o.tel||"-",items:o.items,subtotal:+o.subtotal.toFixed(2),discount_value:+(o.subtotal-o.total).toFixed(2),shipping_value:0,total:+o.total.toFixed(2),status:"pendente"})}).catch(()=>{});
   // pedido validado no servidor (preço e estoque conferidos lá); se a função falhar, cai no caminho antigo
   try{fetch(`${SB_URL}/functions/v1/create-order`,{method:"POST",keepalive:true,headers:H,
     body:JSON.stringify({code:o.code,nome:o.nome,tel:o.tel,items:o.items.map(i=>({product_id:i.product_id,size:i.size,qty:i.qty}))})})
