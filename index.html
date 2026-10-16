@@ -330,6 +330,10 @@ footer .tagline{font-family:var(--f-display);font-style:italic;font-size:22px;co
 .dh{display:flex;justify-content:space-between;align-items:center;padding:20px 22px;border-bottom:1px solid var(--line)}
 .dh h3{font-family:var(--f-display);font-weight:400;font-size:30px;margin:0}
 .db{flex:1;overflow:auto;padding:8px 22px}
+/* sacola: rola inteira (itens + total + formulário), cabeçalho fixo — o rodapé alto não espreme mais os itens */
+#cart{overflow-y:auto;overscroll-behavior:contain}
+#cart .dh{position:sticky;top:0;background:var(--bg);z-index:2}
+#cart .db{flex:none;overflow:visible}
 .df{border-top:1px solid var(--line);padding:18px 22px;display:flex;flex-direction:column;gap:12px}
 .line-item{display:grid;grid-template-columns:76px 1fr auto;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);align-items:start}
 .line-item .th{background:var(--tile);aspect-ratio:1;display:grid;place-items:center}
@@ -343,6 +347,29 @@ footer .tagline{font-family:var(--f-display);font-style:italic;font-size:22px;co
 .tot{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:13px}
 .tot.big{font-size:16px;font-weight:700}
 .tot.big b{color:var(--ok)}
+.tot.disc span:last-child{color:var(--ok)}
+.paysel{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.paysel button{border:1px solid var(--line);background:transparent;color:var(--fg);padding:10px 8px;text-align:left;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-height:54px}
+.paysel button b{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.paysel button small{font-size:11px;color:var(--muted)}
+.paysel button[aria-pressed=true]{border-color:var(--neon);box-shadow:inset 0 0 0 1px var(--neon)}
+.nudge{font-size:12px;line-height:1.45;border:1px dashed var(--neon);padding:8px 10px;color:var(--fg)}
+.nudge b{color:var(--neon)}
+.ladder{display:flex;gap:4px;margin-top:6px}
+.ladder i{flex:1;height:4px;background:var(--line)}
+.ladder i.on{background:var(--neon)}
+.sugg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sugg button{border:1px solid var(--line);background:transparent;color:var(--fg);padding:0;text-align:left;cursor:pointer;font:inherit;display:flex;flex-direction:column;min-width:0}
+.sugg .th{aspect-ratio:1;overflow:hidden;background:var(--tile)}
+.sugg .th img,.sugg .th svg{width:100%;height:100%;object-fit:cover;display:block}
+.sugg .tx{padding:6px 7px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.sugg .tx span{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sugg .tx b{font-family:var(--f-mono);font-size:11px}
+.kit{border:1px solid var(--neon);padding:12px;display:flex;flex-direction:column;gap:8px;background:color-mix(in srgb,var(--neon) 6%,transparent)}
+.kit .kt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-family:var(--f-mono);font-size:12px}
+.kit .kt b{font-size:16px;color:var(--ok)}
+.cart-sugg{padding:4px 22px 14px}
+.cart-sugg .lbl{margin:8px 0}
 .ship{border:1px solid var(--line);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
 .ship-txt{font-family:var(--f-mono);font-size:11px;letter-spacing:.04em}
 .ship-txt b{color:var(--red)}
@@ -633,14 +660,20 @@ footer .tagline{font-family:var(--f-display);font-style:italic;font-size:22px;co
   <div class="dh"><h3>Sacola</h3><button class="sq" data-close aria-label="Fechar sacola">✕</button></div>
   <div class="db" id="cartBody"></div>
   <div class="df" id="cartFoot">
+    <div class="paysel" role="group" aria-label="Forma de pagamento">
+      <button type="button" data-pay="pix" aria-pressed="true"><b>Pix</b><small id="payPixHint">5% off</small></button>
+      <button type="button" data-pay="cartao" aria-pressed="false"><b>Cartão</b><small>link de pagamento no WhatsApp</small></button>
+    </div>
+    <div class="nudge" id="cNudge" hidden></div>
     <div class="tot"><span>Subtotal</span><span id="cSub"></span></div>
+    <div class="tot disc" id="cDiscRow"><span id="cDiscLbl">Desconto Pix</span><span id="cDisc"></span></div>
     <div class="tot"><span>Frete</span><span id="cShip"></span></div>
-    <div class="tot big"><span>Total no Pix</span><b id="cPix"></b></div>
+    <div class="tot big"><span id="cTotLbl">Total no Pix</span><b id="cPix"></b></div>
     <div class="ship" id="shipBox"><div class="ship-txt" id="shipTxt"></div><div class="ship-bar"><i id="shipBar"></i></div></div>
     <div class="field"><label class="lbl" for="cName">Seu nome</label><input id="cName" autocomplete="name"></div>
     <div class="field"><label class="lbl" for="cTel">WhatsApp</label><input id="cTel" inputmode="tel" autocomplete="tel" placeholder="(34) 9…"></div>
     <button class="btn red" id="checkout">Finalizar pedido</button>
-    <p class="note">A gente imprime seu comprovante e o pedido vai pronto pro nosso WhatsApp com peças, tamanhos e total. Lá a gente confirma a grade, combina entrega ou retirada e manda a chave Pix.</p>
+    <p class="note">A gente imprime seu comprovante e o pedido vai pronto pro nosso WhatsApp com peças, tamanhos e total. Lá a gente confirma a grade, combina entrega ou retirada e manda a chave Pix ou o link de pagamento do cartão.</p>
   </div>
 </aside>
 
@@ -975,7 +1008,19 @@ function card(p){
 }
 
 /* ---------- anúncio ---------- */
-const FRETE_GRATIS=199;   // valor mínimo (no Pix) para frete grátis
+const FRETE_GRATIS=199;
+/* Desconto no Pix (cartão = preço cheio). 1–2 peças: 5% · a partir da 3ª: 3% por peça a mais · teto 15%.
+   A MESMA regra roda no servidor (função create-order) — se mudar aqui, mude lá também. */
+const PIX_BASE=5, PIX_STEP=3, PIX_MAX=15;
+const pixPct=n=>n<=1?PIX_BASE:Math.max(PIX_BASE,Math.min(PIX_MAX,PIX_STEP*(n-1)));
+const r2=v=>Math.round(v*100)/100;
+let PAY=(()=>{try{return localStorage.getItem("nh_pay")==="cartao"?"cartao":"pix"}catch(e){return "pix"}})();
+function cartTotals(){
+  const n=CART.reduce((a,i)=>a+i.qty,0), sub=r2(CART.reduce((a,i)=>a+byId(i.id).price*i.qty,0));
+  const pct=pixPct(n), pix=r2(sub*(1-pct/100)), total=PAY==="cartao"?sub:pix;
+  return {n,sub,pct,pix,total,disc:r2(sub-total)};
+}
+function nextStep(n){for(let k=n+1;k<=n+6;k++){if(pixPct(k)>pixPct(n))return {k,pct:pixPct(k)}}return null}   // valor mínimo (no Pix) para frete grátis
 $("#ibFrete").textContent=brl(FRETE_GRATIS).replace(/,00$/,"");
 const SLOGAN=["Pelo corre e pela cultura","NOHYPE®","Os produtos mais hypados do mercado","Frete grátis a partir de "+brl(FRETE_GRATIS).replace(/,00$/,""),"Entregamos para todo o Brasil"];
 $("#sloganTrack").innerHTML=Array(4).fill(SLOGAN).flat().map(t=>`<span>${esc(t)}</span>`).join("");
@@ -1231,14 +1276,26 @@ function openProduct(id,from){
    <div class="pi"><div class="eyebrow">${esc(p.brand)} · ${esc(p.type)}</div><h3 id="pmTitle">${esc(p.name)}</h3>${p.desc?`<p class="pdesc">${esc(p.desc)}</p>`:""}
     <div><div class="big-price">${brl(p.price)}</div><div class="pixline"><b>${brl(p.pix)}</b> no Pix (economia de ${brl(p.price-p.pix)})</div></div>
     ${stockHTML(p)}
-    ${p.ok?`<div><div class="lbl" style="margin-bottom:8px">Tamanho</div><div class="sizes" id="pmSizes">${SIZES.map(s=>`<button aria-pressed="false">${s}</button>`).join("")}</div><p class="note" style="margin-top:8px">A grade disponível é confirmada no WhatsApp antes do pagamento.</p></div>
+    ${p.ok?`<div><div class="lbl" style="margin-bottom:8px">Tamanho</div><div class="sizes" id="pmSizes">${SIZES.map(s=>`<button aria-pressed="false">${s}</button>`).join("")}</div><p class="note" style="margin-top:8px">A grade disponível é confirmada no WhatsApp antes do pagamento. Leve 3+ peças e o desconto no Pix sobe — até ${PIX_MAX}%.</p></div>
     <div class="row" style="align-items:center"><div class="qty" style="flex:0 0 auto;margin:0"><button id="qm" aria-label="Diminuir">−</button><span id="qv">1</span><button id="qp" aria-label="Aumentar">+</button></div>
     <button class="btn" id="pmAdd">Adicionar à sacola</button></div>
     <a class="btn ghost" id="pmBuy" href="#" target="_blank" rel="noopener">Comprar agora no WhatsApp ↗</a>`
     :`<a class="btn red" href="${waAsk}" target="_blank" rel="noopener">Avise-me quando voltar ↗</a>`}
+    ${(()=>{const sg=suggestFor(p,[],3);if(!sg.length)return "";
+      const kit=p.ok?[p,...sg.slice(0,2)]:[];const kSub=r2(kit.reduce((a,x)=>a+x.price,0)),kPct=pixPct(kit.length),kPix=r2(kSub*(1-kPct/100));
+      return `<div><div class="lbl" style="margin-bottom:8px">Combina com</div><div class="sugg" id="pmSugg">${sg.map(suggCard).join("")}</div></div>`+
+      (kit.length===3?`<div class="kit"><div class="lbl" style="margin:0">Monte seu kit · 3 peças</div>
+        <div class="kt"><span>${esc(kit.map(x=>x.model).join(" + "))}</span></div>
+        <div class="kt"><span>De ${brl(kSub)} por</span><b>${brl(kPix)} no Pix</b></div>
+        <button class="btn" type="button" id="pmKit" data-kit="${kit.map(x=>x.id).join(",")}">Adicionar kit à sacola</button>
+        <p class="note" style="margin:0">Mesmo tamanho nas 3 peças (troca no WhatsApp se precisar). Quanto mais peças, maior o desconto no Pix — até ${PIX_MAX}%.</p></div>`:"");})()}
     <button class="btn ghost" id="pmShare" type="button" style="font-size:12px;padding:10px 14px">Compartilhar esta peça ↗</button>
     <div class="note">Cor: ${esc(p.cols.map(c=>c.fam).join(" / "))} · Marca: ${esc(p.brand)} · ${p.img?"Foto real da peça.":"Ilustração da peça. Foto real em breve."}</div>
    </div>`;
+  $$("#pmSugg [data-sugg]").forEach(b=>b.onclick=()=>openProduct(b.dataset.sugg));
+  if($("#pmKit"))$("#pmKit").onclick=()=>{if(!pmSize){toast("Escolha o tamanho primeiro");$("#pmSizes")&&$("#pmSizes").scrollIntoView({block:"center",behavior:"smooth"});return}
+    const ids=$("#pmKit").dataset.kit.split(",");ids.forEach(id=>{const x=byId(id);if(x&&x.ok){const ex=CART.find(i=>i.id===id&&i.size===pmSize);ex?ex.qty=Math.min(9,ex.qty+1):CART.push({id,size:pmSize,qty:1})}});
+    saveCart();track("AddToCart",{content_ids:ids,value:r2(ids.reduce((a,id)=>a+byId(id).price,0))});toast(`Kit adicionado (tam. ${pmSize})`);closeAll();setTimeout(()=>openDrawer("#cart"),250)};
   setURL(p); track("ViewContent",{content_ids:[p.id],content_name:p.name,content_type:"product",value:p.pix});
   $("#pmShare").onclick=async()=>{const url=productURL(p);
     try{if(navigator.share){await navigator.share({title:p.name+" · NOHYPE",text:`${p.name} — ${brl(p.pix)} no Pix`,url});return}}catch(e){if(e&&e.name==="AbortError")return}
@@ -1276,9 +1333,20 @@ function renderCart(){
     <div><div class="nm">${esc(p.name)}</div><div class="op">TAM. ${i.size}${p.ok?"":" · <b style='color:var(--red)'>ESGOTOU</b>"}</div>
     <div class="qty"><button data-q="${k}" data-d="-1" aria-label="Diminuir">−</button><span>${i.qty}</span><button data-q="${k}" data-d="1" aria-label="Aumentar">+</button></div>
     <button class="rm" data-rm="${k}">Remover</button></div>
-    <div class="price mono" style="font-weight:700">${brl(p.pix*i.qty)}</div></div>`}).join("");
-  const sub=CART.reduce((a,i)=>a+byId(i.id).price*i.qty,0), pix=CART.reduce((a,i)=>a+byId(i.id).pix*i.qty,0);
-  $("#cSub").textContent=brl(sub); $("#cPix").textContent=brl(pix);
+    <div class="price mono" style="font-weight:700">${brl(p.price*i.qty)}</div></div>`}).join("")+cartSuggHTML();
+  const T=cartTotals(), pix=T.total;
+  $$(".paysel button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pay===PAY));
+  $("#payPixHint").textContent=`${T.pct}% off · ${brl(T.pix)}`;
+  $("#cSub").textContent=brl(T.sub);
+  $("#cDiscRow").hidden=PAY==="cartao";
+  $("#cDiscLbl").textContent=`Desconto Pix (${T.pct}%)`; $("#cDisc").textContent="−"+brl(T.disc);
+  $("#cTotLbl").textContent=PAY==="cartao"?"Total no cartão":"Total no Pix";
+  $("#cPix").textContent=brl(T.total);
+  const nx=nextStep(T.n);
+  $("#cNudge").hidden=!nx&&T.pct<PIX_MAX;
+  $("#cNudge").innerHTML=nx?`Leve <b>+${nx.k-T.n} peça${nx.k-T.n>1?"s":""}</b> e o desconto no Pix sobe pra <b>${nx.pct}%</b>${PAY==="cartao"?" (no Pix)":""}<div class="ladder" aria-hidden="true">${[1,2,3,4,5,6].map(k=>`<i class="${T.n>=k?"on":""}"></i>`).join("")}</div>`
+    :`🔥 Desconto máximo liberado: <b>${PIX_MAX}% no Pix</b>`;
+  bindCartSugg();
   const falta=FRETE_GRATIS-pix, ok=falta<=0;
   $("#cShip").textContent=ok?"Grátis":"Combinado no WhatsApp";
   $("#shipBox").classList.toggle("done",ok);
@@ -1289,13 +1357,34 @@ function renderCart(){
   syncCheckout();
 }
 function waMessage(){
-  const pix=CART.reduce((a,i)=>a+byId(i.id).pix*i.qty,0);
+  const T=cartTotals();
   const nm=$("#cName").value.trim();
+  const frete=T.total>=FRETE_GRATIS?"\nFrete: grátis (acima de "+brl(FRETE_GRATIS)+")":"";
   return `Oi, NOHYPE! ${nm?`Sou ${nm}. `:""}Quero fechar este pedido:\n\n`+
-    CART.map(i=>{const p=byId(i.id);return `• ${i.qty}x ${p.name} — tam. ${i.size} — ${brl(p.pix*i.qty)}`}).join("\n")+
-    `\n\nTotal no Pix: ${brl(pix)}${pix>=FRETE_GRATIS?"\nFrete: grátis (acima de "+brl(FRETE_GRATIS)+")":""}\nPode confirmar a grade e me passar a chave Pix?`;
+    CART.map(i=>{const p=byId(i.id);return `• ${i.qty}x ${p.name} — tam. ${i.size} — ${brl(p.price*i.qty)}`}).join("\n")+
+    `\n\nSubtotal: ${brl(T.sub)}`+
+    (PAY==="cartao"
+      ? `\nPagamento: cartão de crédito\nTotal no cartão: ${brl(T.total)}${frete}\nPode confirmar a grade e me mandar o link de pagamento?`
+      : `\nDesconto Pix (${T.pct}%): −${brl(T.disc)}\nTotal no Pix: ${brl(T.total)}${frete}\nPode confirmar a grade e me passar a chave Pix?`);
 }
+/* ---------- sugestões / kit ---------- */
+function suggestFor(base,excl,k){
+  const ex=new Set(excl||[]);
+  const seed=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))|0;return h};
+  return PRODUCTS.filter(p=>p.ok&&!ex.has(p.id)&&p.id!==base.id&&p.model!==base.model)
+    .map(p=>({p,s:(p.img?4:0)+(p.type===base.type?2:0)+(p.brand===base.brand?1.5:0)+(Math.abs(p.price-base.price)<=base.price*.3?1:0)+((seed(base.id+p.id)>>>0)%100)/1000}))
+    .sort((a,b)=>b.s-a.s).filter((x,i,arr)=>arr.findIndex(y=>y.p.model===x.p.model)===i).slice(0,k||3).map(x=>x.p);
+}
+function suggCard(p){return `<button type="button" data-sugg="${p.id}" aria-label="Ver ${esc(p.name)}"><div class="th">${p.img?`<img src="${p.img}" alt="" loading="lazy" decoding="async">`:teeSVG(p)}</div><div class="tx"><span>${esc(p.model)}</span><b>${brl(p.price)}</b></div></button>`}
+function cartSuggHTML(){
+  if(!CART.length)return "";
+  const last=byId(CART[CART.length-1].id); if(!last)return "";
+  const list=suggestFor(last,CART.map(i=>i.id),3); if(!list.length)return "";
+  return `<div class="cart-sugg"><div class="lbl">Complete seu kit</div><div class="sugg">${list.map(suggCard).join("")}</div></div>`;
+}
+function bindCartSugg(){$$("#cartBody [data-sugg]").forEach(b=>b.onclick=()=>{closeAll(true);openProduct(b.dataset.sugg)})}
 function syncCheckout(){}
+$$(".paysel button").forEach(b=>b.addEventListener("click",()=>{PAY=b.dataset.pay==="cartao"?"cartao":"pix";try{localStorage.setItem("nh_pay",PAY)}catch(e){}renderCart()}));
 const RP_LABEL={processing:"Processando seu pedido",printing:"Imprimindo seu comprovante",complete:"Pedido pronto"};
 const ICO_SPIN=`<svg class="spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>`;
 const ICO_OK=`<svg class="ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m7.5 12.5 3 3 6-6.5" fill="none" stroke="#0a0a0a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -1313,20 +1402,21 @@ function receiptHTML(o){
    <div class="c" style="margin-top:8px;font-size:10px;color:#6c6a66">AV. JERÔNIMO AUGUSTO DE ARAÚJO, 577<br>NOVO HORIZONTE · PERDIZES-MG</div><hr>
    <div class="ln"><span>PEDIDO</span><span>#${o.code}</span></div><div class="ln"><span>DATA</span><span>${dt}</span></div>
    ${o.nome?`<div class="ln"><span>CLIENTE</span><span>${esc(o.nome.toUpperCase().slice(0,22))}</span></div>`:""}<hr>
-   ${o.items.map(i=>`<div class="it"><div class="ln"><span>${i.qty}x ${esc(byId(i.product_id).model.toUpperCase())}</span><span>${brl(i.price_pix*i.qty)}</span></div><small>${esc(byId(i.product_id).brand)} · ${esc(byId(i.product_id).color)} · TAM. ${i.size}</small></div>`).join("")}
-   <hr><div class="ln"><span>SUBTOTAL</span><span>${brl(o.subtotal)}</span></div><div class="ln"><span>DESCONTO PIX</span><span>−${brl(o.subtotal-o.total)}</span></div>
+   ${o.items.map(i=>`<div class="it"><div class="ln"><span>${i.qty}x ${esc(byId(i.product_id).model.toUpperCase())}</span><span>${brl(i.price*i.qty)}</span></div><small>${esc(byId(i.product_id).brand)} · ${esc(byId(i.product_id).color)} · TAM. ${i.size}</small></div>`).join("")}
+   <hr><div class="ln"><span>SUBTOTAL</span><span>${brl(o.subtotal)}</span></div>${o.pay==="cartao"?"":`<div class="ln"><span>DESCONTO PIX ${o.pct}%</span><span>−${brl(o.subtotal-o.total)}</span></div>`}
    <div class="ln"><span>FRETE</span><span>${o.total>=FRETE_GRATIS?"GRÁTIS":"A COMBINAR"}</span></div>
-   <div class="ln big" style="margin-top:6px"><span>TOTAL PIX</span><span>${brl(o.total)}</span></div><hr>
-   <div class="c" style="font-size:10px">PAGAMENTO VIA PIX · GRADE CONFIRMADA NO WHATSAPP</div>
+   <div class="ln big" style="margin-top:6px"><span>${o.pay==="cartao"?"TOTAL CARTÃO":"TOTAL PIX"}</span><span>${brl(o.total)}</span></div><hr>
+   <div class="c" style="font-size:10px">${o.pay==="cartao"?"CARTÃO · LINK DE PAGAMENTO NO WHATSAPP":"PAGAMENTO VIA PIX · GRADE CONFIRMADA NO WHATSAPP"}</div>
    <div class="bar" aria-hidden="true"></div><div class="c" style="font-size:10px;letter-spacing:.3em">${o.code}</div>
    <div class="c" style="margin-top:10px;font-family:var(--f-display);font-style:italic;font-size:16px">valeu pelo corre ✦</div>`;
 }
 $("#checkout").addEventListener("click",()=>{
   if(!CART.length)return;
   if(CART.some(i=>!byId(i.id).ok))return toast("Tire da sacola as peças esgotadas");
-  const items=CART.map(i=>{const p=byId(i.id);return {product_id:p.id,name:p.name,size:i.size,qty:i.qty,price:p.price,price_pix:p.pix}});
-  const subtotal=items.reduce((a,i)=>a+i.price*i.qty,0), total=items.reduce((a,i)=>a+i.price_pix*i.qty,0);
-  rpOrder={code:"NH"+Date.now().toString(36).slice(-5).toUpperCase(),nome:$("#cName").value.trim(),tel:$("#cTel").value.trim(),items,subtotal,total};
+  const T=cartTotals();
+  const items=CART.map(i=>{const p=byId(i.id);return {product_id:p.id,name:p.name,size:i.size,qty:i.qty,price:p.price,price_pix:r2(p.price*(1-T.pct/100))}});
+  const subtotal=T.sub, total=T.total;
+  rpOrder={code:"NH"+Date.now().toString(36).slice(-5).toUpperCase(),nome:$("#cName").value.trim(),tel:$("#cTel").value.trim(),items,subtotal,total,pay:PAY,pct:T.pct};
   $("#rpPaper").innerHTML=receiptHTML(rpOrder);
   $("#rpTotal").textContent=brl(total);
   track("InitiateCheckout",{content_ids:items.map(i=>i.product_id),num_items:items.reduce((a,i)=>a+i.qty,0),value:total});
@@ -1343,10 +1433,10 @@ $("#rpSend").addEventListener("click",()=>{
   track("Lead",{content_ids:o.items.map(i=>i.product_id),value:o.total});
   const H={apikey:SB_KEY,"Content-Type":"application/json"};
   const legacy=()=>fetch(`${SB_URL}/rest/v1/store_orders`,{method:"POST",keepalive:true,headers:{...H,Authorization:`Bearer ${SB_KEY}`,Prefer:"return=minimal"},
-    body:JSON.stringify({customer_nome:o.nome||"Cliente do site",customer_telefone:o.tel||"-",items:o.items,subtotal:+o.subtotal.toFixed(2),discount_value:+(o.subtotal-o.total).toFixed(2),shipping_value:0,total:+o.total.toFixed(2),status:"pendente"})}).catch(()=>{});
+    body:JSON.stringify({customer_nome:o.nome||"Cliente do site",customer_telefone:o.tel||"-",items:o.items,subtotal:+o.subtotal.toFixed(2),discount_value:+(o.subtotal-o.total).toFixed(2),shipping_value:0,total:+o.total.toFixed(2),status:"pendente",coupon:o.pay==="cartao"?"CARTAO":"PIX-"+o.pct})}).catch(()=>{});
   // pedido validado no servidor (preço e estoque conferidos lá); se a função falhar, cai no caminho antigo
   try{fetch(`${SB_URL}/functions/v1/create-order`,{method:"POST",keepalive:true,headers:H,
-    body:JSON.stringify({code:o.code,nome:o.nome,tel:o.tel,items:o.items.map(i=>({product_id:i.product_id,size:i.size,qty:i.qty}))})})
+    body:JSON.stringify({code:o.code,nome:o.nome,tel:o.tel,payment:o.pay,items:o.items.map(i=>({product_id:i.product_id,size:i.size,qty:i.qty}))})})
     .then(r=>{if(!r.ok&&r.status>=500)legacy()}).catch(legacy)}catch(err){}
   CART=[];saveCart();rpOrder=null;
   setTimeout(()=>{rpClose();toast("Pedido enviado pro WhatsApp")},400);
