@@ -1300,7 +1300,18 @@ function openProduct(id,from){
   $("#pmShare").onclick=async()=>{const url=productURL(p);
     try{if(navigator.share){await navigator.share({title:p.name+" · NOHYPE",text:`${p.name} — ${brl(p.pix)} no Pix`,url});return}}catch(e){if(e&&e.name==="AbortError")return}
     try{await navigator.clipboard.writeText(url);toast("Link copiado")}catch(e){prompt("Copie o link:",url)}};
-  if(p.ok)$("#pmBuy").addEventListener("click",()=>track("Contact",{content_ids:[p.id],value:p.pix*pmQty}));
+  if(p.ok)$("#pmBuy").addEventListener("click",async e=>{
+    e.preventDefault();
+    const btn=$("#pmBuy");if(btn.dataset.busy)return;btn.dataset.busy="1";const txt=btn.textContent;btn.textContent="Abrindo o WhatsApp…";
+    const pct=pixPct(pmQty),sub=r2(p.price*pmQty),code="NH"+Date.now().toString(36).slice(-5).toUpperCase();
+    const o={code,nome:"",tel:"",pay:"pix",pct,subtotal:sub,total:r2(sub*(1-pct/100)),
+      items:[{product_id:p.id,name:p.name,size:pmSize||null,qty:pmQty,price:p.price,price_pix:r2(p.price*(1-pct/100))}]};
+    track("Contact",{content_ids:[p.id],value:o.total});
+    await withTimeout(submitOrder(o),2500);
+    const url=btn.href.replace(/(text=)([^&]*)/,(m,k,v)=>k+v+encodeURIComponent(`\n\nPedido #${code}`));
+    btn.textContent=txt;delete btn.dataset.busy;
+    location.href=url;
+  });
   $$("#pm .thumbs button").forEach(b=>b.onclick=()=>{$("#pmMain").innerHTML=views[+b.dataset.v];$("#pmMain").classList.toggle("has-photo",!!p.img);$$("#pm .thumbs button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
   if(p.ok){
     const syncBuy=()=>{$("#pmBuy").href=`https://wa.me/${WA}?text=${encodeURIComponent(`Oi! Quero comprar:\n• ${pmQty}x ${p.name}${pmSize?` (tam. ${pmSize})`:""} — ${brl(p.pix*pmQty)} no Pix`)}`};
@@ -1410,6 +1421,22 @@ function receiptHTML(o){
    <div class="bar" aria-hidden="true"></div><div class="c" style="font-size:10px;letter-spacing:.3em">${o.code}</div>
    <div class="c" style="margin-top:10px;font-family:var(--f-display);font-style:italic;font-size:16px">valeu pelo corre ✦</div>`;
 }
+/* Registra o pedido no sistema ANTES de ir pro WhatsApp (navegador do Instagram corta a página ao abrir o app).
+   Evita duplicar: o mesmo carrinho/pagamento enviado de novo em até 30 min reaproveita o mesmo envio. */
+let lastSent=null;
+function submitOrder(o){
+  const sig=JSON.stringify([o.pay,o.nome,o.tel,o.items.map(i=>[i.product_id,i.size,i.qty])]);
+  if(lastSent&&lastSent.sig===sig&&Date.now()-lastSent.at<30*60e3)return lastSent.p;
+  const H={apikey:SB_KEY,"Content-Type":"application/json"};
+  const legacy=()=>fetch(`${SB_URL}/rest/v1/store_orders`,{method:"POST",keepalive:true,headers:{...H,Authorization:`Bearer ${SB_KEY}`,Prefer:"return=minimal"},
+    body:JSON.stringify({customer_nome:o.nome||"Cliente do site",customer_telefone:o.tel||"-",items:o.items,subtotal:+o.subtotal.toFixed(2),discount_value:+(o.subtotal-o.total).toFixed(2),shipping_value:0,total:+o.total.toFixed(2),status:"pendente",coupon:o.pay==="cartao"?"CARTAO":"PIX-"+o.pct})}).then(r=>r.ok).catch(()=>false);
+  const p=fetch(`${SB_URL}/functions/v1/create-order`,{method:"POST",keepalive:true,headers:H,
+    body:JSON.stringify({code:o.code,nome:o.nome,tel:o.tel,payment:o.pay,items:o.items.map(i=>({product_id:i.product_id,size:i.size,qty:i.qty}))})})
+    .then(r=>r.ok?true:(r.status>=500?legacy():false)).catch(legacy);
+  lastSent={sig,at:Date.now(),p};
+  return p;
+}
+const withTimeout=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r(null),ms))]);
 $("#checkout").addEventListener("click",()=>{
   if(!CART.length)return;
   if(CART.some(i=>!byId(i.id).ok))return toast("Tire da sacola as peças esgotadas");
@@ -1421,6 +1448,7 @@ $("#checkout").addEventListener("click",()=>{
   $("#rpTotal").textContent=brl(total);
   track("InitiateCheckout",{content_ids:items.map(i=>i.product_id),num_items:items.reduce((a,i)=>a+i.qty,0),value:total});
   $("#rpSend").href=`https://wa.me/${WA}?text=${encodeURIComponent(waMessage()+`\n\nPedido #${rpOrder.code}`)}`;
+  rpOrder.sent=submitOrder(rpOrder);
   closeAll(true); $("#scrim").classList.add("on"); $("#rpWrap").classList.add("on");
   rpTimers.forEach(clearTimeout); rpStage("processing");
   rpTimers=[setTimeout(()=>rpStage("printing"),1100),setTimeout(()=>{rpStage("complete");$("#rpSend").focus()},1100+1850)];
@@ -1431,13 +1459,7 @@ $("#rpSend").addEventListener("click",()=>{
   if(!rpOrder)return;
   const o=rpOrder;
   track("Lead",{content_ids:o.items.map(i=>i.product_id),value:o.total});
-  const H={apikey:SB_KEY,"Content-Type":"application/json"};
-  const legacy=()=>fetch(`${SB_URL}/rest/v1/store_orders`,{method:"POST",keepalive:true,headers:{...H,Authorization:`Bearer ${SB_KEY}`,Prefer:"return=minimal"},
-    body:JSON.stringify({customer_nome:o.nome||"Cliente do site",customer_telefone:o.tel||"-",items:o.items,subtotal:+o.subtotal.toFixed(2),discount_value:+(o.subtotal-o.total).toFixed(2),shipping_value:0,total:+o.total.toFixed(2),status:"pendente",coupon:o.pay==="cartao"?"CARTAO":"PIX-"+o.pct})}).catch(()=>{});
-  // pedido validado no servidor (preço e estoque conferidos lá); se a função falhar, cai no caminho antigo
-  try{fetch(`${SB_URL}/functions/v1/create-order`,{method:"POST",keepalive:true,headers:H,
-    body:JSON.stringify({code:o.code,nome:o.nome,tel:o.tel,payment:o.pay,items:o.items.map(i=>({product_id:i.product_id,size:i.size,qty:i.qty}))})})
-    .then(r=>{if(!r.ok&&r.status>=500)legacy()}).catch(legacy)}catch(err){}
+  if(!o.sent)o.sent=submitOrder(o);
   CART=[];saveCart();rpOrder=null;
   setTimeout(()=>{rpClose();toast("Pedido enviado pro WhatsApp")},400);
 });
