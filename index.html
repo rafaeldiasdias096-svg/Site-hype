@@ -369,6 +369,50 @@ footer .tagline{font-family:var(--f-display);font-style:italic;font-size:22px;co
 .kit .kt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-family:var(--f-mono);font-size:12px}
 .kit .kt b{font-size:16px;color:var(--ok)}
 .cart-sugg{padding:4px 22px 14px}
+.coupon{display:flex;gap:6px}
+.coupon input{flex:1;min-width:0;border:1px solid var(--line);background:transparent;color:var(--fg);padding:10px 12px;font-family:var(--f-mono);font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+.coupon button{border:1px solid var(--fg);background:transparent;color:var(--fg);padding:0 14px;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.coupon.on input{border-color:var(--ok);color:var(--ok)}
+/* pop-up de boas-vindas (cupom) */
+.welcome{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:20px;background:rgba(8,6,3,.62);opacity:0;pointer-events:none;transition:opacity .35s}
+.welcome.on{opacity:1;pointer-events:auto}
+.welcome .wbox{position:relative;width:min(400px,100%);background:var(--panel);color:var(--fg);border:1px solid var(--neon);padding:30px 24px 22px;text-align:center;transform:translateY(16px) scale(.97);transition:transform .45s cubic-bezier(.16,1,.3,1);box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+.welcome.on .wbox{transform:none}
+.welcome .wx{position:absolute;top:8px;right:8px;width:40px;height:40px;border:0;background:transparent;color:var(--fg);font-size:18px;cursor:pointer}
+.welcome .weye{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
+.welcome h3{font-family:var(--f-display);font-weight:400;font-size:clamp(34px,9vw,46px);line-height:1;margin:10px 0 6px}
+.welcome h3 b{font-family:var(--f-body);font-style:italic;font-weight:900;color:var(--red)}
+.welcome p{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.5}
+.welcome .wcode{display:flex;align-items:center;justify-content:center;gap:10px;border:1px dashed var(--neon);padding:12px;margin-bottom:14px;font-family:var(--f-mono);font-size:20px;letter-spacing:.22em;font-weight:700}
+.welcome .btn{width:100%}
+.welcome .wno{margin-top:10px;background:none;border:0;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;padding:8px}
+/* banner da coleção (fim da página) */
+.colecao{position:relative;display:block;overflow:hidden;background:#140e07;isolation:isolate}
+.colecao .cbg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(36px) saturate(1.15);opacity:.75;z-index:-1;transform:scale(1.1)}
+.colecao picture,.colecao img{display:block}
+.colecao img{width:100%;height:auto}
+@media (min-width:760px){.colecao{padding-block:clamp(28px,4vw,56px)}.colecao img{width:min(760px,82vh,92%);margin-inline:auto;box-shadow:0 30px 80px -24px rgba(0,0,0,.7)}}
+.colecao:focus-visible{outline-offset:-4px}
+.colecao img{transition:transform .8s cubic-bezier(.16,1,.3,1)}
+@media (hover:hover){.colecao:hover img{transform:scale(1.015)}}
+
+/* ========= Paleta da estação: "Renascença" (dourado/creme/marrom da coleção) — liga sozinha até 30/11 ========= */
+html[data-season="ren"]{--red:#8f6214;--purple:#7a4f10;--neon:#b8862b;--bg:#f5ecd9;--fg:#24170b;--muted:#7a634a;--line:#dccaa6;--tile:#ecdfc3;--panel:#fbf5e8;--ink:#1a120a;--ink-fg:#f3e8d0;--ok:#2f7a3c}
+@media (prefers-color-scheme:dark){html[data-season="ren"]:not([data-theme="light"]){--red:#e3b65e;--purple:#c9953f;--neon:#e8c27a;--bg:#120d08;--fg:#f2e6cc;--muted:#b39c7a;--line:#3a2b1b;--tile:#1f160d;--panel:#18110a;--ink:#0b0805;--ink-fg:#f2e6cc;--ok:#9fd38f}}
+html[data-season="ren"][data-theme="dark"]{--red:#e3b65e;--purple:#c9953f;--neon:#e8c27a;--bg:#120d08;--fg:#f2e6cc;--muted:#b39c7a;--line:#3a2b1b;--tile:#1f160d;--panel:#18110a;--ink:#0b0805;--ink-fg:#f2e6cc;--ok:#9fd38f}
+html[data-season="ren"] .slogan{background:linear-gradient(90deg,#3d2810,#8f6214 50%,#3d2810);border-bottom-color:#2a1a08;color:#f6e7c4}
+html[data-season="ren"] .ship-bar i{background:linear-gradient(90deg,#8f6214,#e8c27a)}
+html[data-season="ren"] .btn.red,html[data-season="ren"] .btn.neon{color:#1b1106}
+html[data-season="ren"] .manifesto .bg{background:radial-gradient(60% 80% at 20% 30%,rgba(201,149,63,.38),transparent 70%),radial-gradient(50% 70% at 85% 70%,rgba(140,40,30,.32),transparent 70%),#0d0905}
+html[data-season="ren"] .cover-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#d9a54a,#a8721f);mix-blend-mode:color;opacity:.92;pointer-events:none}
+html[data-season="ren"] .truck text{fill:#8f6214}
+html[data-season="ren"] .truck [fill="#9b5cff"],html[data-season="ren"] .truck [fill="#7a2cf0"]{fill:#c9953f}
+html[data-season="ren"] .cover-note{color:#f3e2bd}
+html[data-season="ren"] .cover-scroll{color:#f6ead0}
+html[data-season="ren"] .ch-top,html[data-season="ren"] .ch-bot{color:#fbf1dc}
+html[data-season="ren"] .ch-big{text-shadow:0 0 22px color-mix(in srgb,var(--neon) 70%,transparent),0 3px 0 #3d2405}
+html[data-season="ren"] .rp-paper .logo .lg-no{color:#8f6214}
+html[data-season="ren"] .parcel rect:last-child{fill:#c9953f}
 .cart-sugg .lbl{margin:8px 0}
 .ship{border:1px solid var(--line);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
 .ship-txt{font-family:var(--f-mono);font-size:11px;letter-spacing:.04em}
@@ -519,7 +563,7 @@ footer .tagline{font-family:var(--f-display);font-style:italic;font-size:22px;co
         <svg class="parcel" viewBox="0 0 11 10"><rect x=".5" y=".5" width="10" height="9" rx="1" fill="#c79a5b" stroke="#7a5a2b" stroke-width=".6"/><path d="M5.5 .5v9M.5 4h10" stroke="#7a5a2b" stroke-width=".6"/><rect x="3.6" y="0" width="3.8" height="2.4" fill="#9b5cff"/></svg>
       </span><span>Entregamos para <b>todo o Brasil</b></span></div>
   <div class="ib-slide" data-i="1"><svg class="ib-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M3 12h18M12 8v13M12 8c-2-4-6-4-6-1.5S10 8 12 8zm0 0c2-4 6-4 6-1.5S14 8 12 8z"/></svg><span>Frete grátis a partir de <b id="ibFrete">R$ 199</b></span></div>
-  <div class="ib-slide" data-i="2"><svg class="ib-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.5 21.5 12 12 21.5 2.5 12z"/><path d="M8 12h8"/></svg><span><b>5% off</b> pagando no Pix</span></div>
+  <div class="ib-slide" data-i="2"><svg class="ib-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.5 21.5 12 12 21.5 2.5 12z"/><path d="M8 12h8"/></svg><span>Leve 3+ peças: <b>até 15% off</b> no Pix</span></div>
   <div class="ib-slide" data-i="3"><svg class="ib-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-11.5A7 7 0 0 0 5 9.5C5 14.7 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Retire na loja em <b>Perdizes-MG</b></span></div>
   <div class="ib-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
 </div>
@@ -565,7 +609,7 @@ footer .tagline{font-family:var(--f-display);font-style:italic;font-size:22px;co
     <div class="cover-head" id="coverHead" aria-hidden="true"><span class="ch-top">Os produtos mais</span><span class="ch-big">Hypados</span><span class="ch-bot">do mercado</span></div>
     <div class="cover-cta wrap" id="coverCta">
       <a class="btn neon" href="#rails">Ver as peças ↓</a>
-      <span class="cover-note">Perdizes-MG · 5% off no Pix</span>
+      <span class="cover-note">Perdizes-MG · até 15% off no Pix</span>
     </div>
     <a class="cover-scroll" href="#rails" aria-label="Rolar até as peças"><span>Role</span><i></i></a>
   </section>
@@ -618,7 +662,7 @@ footer .tagline{font-family:var(--f-display);font-style:italic;font-size:22px;co
           <fieldset><legend>Marca</legend><div class="opts" id="fBrand"></div></fieldset>
           <fieldset><legend>Modelo</legend><div class="opts" id="fType"></div></fieldset>
           <fieldset><legend>Cor</legend><div class="opts" id="fColor"></div></fieldset>
-          <fieldset><legend>Preço no Pix até <b id="pMaxLbl"></b></legend><input type="range" id="fPrice" min="80" max="260" step="5" aria-label="Preço máximo"></fieldset>
+          <fieldset><legend>Preço até <b id="pMaxLbl"></b></legend><input type="range" id="fPrice" min="80" max="260" step="5" aria-label="Preço máximo"></fieldset>
           <button class="btn ghost" id="fClear">Limpar filtros</button>
         </aside>
         <div>
@@ -640,7 +684,26 @@ footer .tagline{font-family:var(--f-display);font-style:italic;font-size:22px;co
       </div>
     </div>
   </section>
+  <a class="colecao" id="colecao" href="#catalogo" data-go="colecao:oversized" aria-label="Explore a coleção exclusiva de oversized — lançamentos NOHYPE">
+    <span class="cbg" aria-hidden="true" style="background-image:url(img/colecao-blur.webp)"></span>
+    <picture>
+      <source media="(min-width:760px)" srcset="img/colecao-desk.webp" width="1254" height="1254">
+      <img src="img/colecao-mobile.webp" width="941" height="1672" alt="A nova coleção exclusiva da NOHYPE: modelos oversized com identidade marcante, sempre orientados pelo estilo streetwear. Explore a coleção." loading="lazy" decoding="async">
+    </picture>
+  </a>
 </main>
+
+<div class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="wTitle" aria-hidden="true">
+  <div class="wbox">
+    <button class="wx" type="button" data-wclose aria-label="Fechar">✕</button>
+    <div class="weye">Primeira vez na NOHYPE?</div>
+    <h3 id="wTitle">Ganhe <b>5% OFF</b><br>na compra inteira</h3>
+    <p>Use o cupom abaixo na sacola. Vale no Pix ou no cartão.</p>
+    <div class="wcode" aria-label="Cupom DEZCONTO">DEZCONTO</div>
+    <button class="btn red" type="button" id="wApply">Ativar meu cupom</button>
+    <button class="wno" type="button" data-wclose>Agora não</button>
+  </div>
+</div>
 
 <footer>
   <div class="wrap">
@@ -661,10 +724,11 @@ footer .tagline{font-family:var(--f-display);font-style:italic;font-size:22px;co
   <div class="db" id="cartBody"></div>
   <div class="df" id="cartFoot">
     <div class="paysel" role="group" aria-label="Forma de pagamento">
-      <button type="button" data-pay="pix" aria-pressed="true"><b>Pix</b><small id="payPixHint">5% off</small></button>
+      <button type="button" data-pay="pix" aria-pressed="true"><b>Pix</b><small id="payPixHint">até 15% off</small></button>
       <button type="button" data-pay="cartao" aria-pressed="false"><b>Cartão</b><small>link de pagamento no WhatsApp</small></button>
     </div>
     <div class="nudge" id="cNudge" hidden></div>
+    <div class="coupon" id="cCoupon"><input id="cCode" placeholder="Cupom de desconto" autocomplete="off" aria-label="Cupom de desconto" maxlength="20"><button type="button" id="cCodeBtn">Aplicar</button></div>
     <div class="tot"><span>Subtotal</span><span id="cSub"></span></div>
     <div class="tot disc" id="cDiscRow"><span id="cDiscLbl">Desconto Pix</span><span id="cDisc"></span></div>
     <div class="tot"><span>Frete</span><span id="cShip"></span></div>
@@ -930,7 +994,7 @@ function parse(r){
   if(/polo/i.test(name)) type="Polo"; else if(/de time/i.test(name)) type="De Time"; else if(/boxy/i.test(name)) type="Boxy"; else if(/over/i.test(name)) type="Oversized";
   const shape=/polo/i.test(name)?"polo":/de time/i.test(name)?"jersey":/listrad|stripes/i.test(name)?"stripe":/manga longa/i.test(name)?"long":/bot[aã]o/i.test(name)?"shirt":"tee";
   const sub=name.replace(/[“"][^”"]*[”"]/,"").replace(/\s+/g," ").replace(/\s-\s/," · ").trim();
-  return {id,name,brand,price:+price,pix:+pix,ok:!!ok,desc:desc||"",cols,color:cols[0].fam,model,type,shape,sub,img:(()=>{const x=(window.NH_PHOTOS||{})[id];return Array.isArray(x)?x[0]:x||null})(),img2:(()=>{const x=(window.NH_PHOTOS||{})[id];return Array.isArray(x)?x[1]||null:null})()};
+  return {id,name,brand,price:+price,pix:+price,ok:!!ok,desc:desc||"",cols,color:cols[0].fam,model,type,shape,sub,img:(()=>{const x=(window.NH_PHOTOS||{})[id];return Array.isArray(x)?x[0]:x||null})(),img2:(()=>{const x=(window.NH_PHOTOS||{})[id];return Array.isArray(x)?x[1]||null:null})()};
 }
 let PRODUCTS=window.NH_SNAPSHOT.map(parse);
 const byId=id=>PRODUCTS.find(p=>p.id===id);
@@ -950,7 +1014,7 @@ const track=(ev,d)=>{try{window.fbq&&fbq("track",ev,{currency:"BRL",...d})}catch
 function lum(hex){const n=parseInt(hex.slice(1),16);return (0.299*(n>>16)+0.587*(n>>8&255)+0.114*(n&255))/255}
 function teeSVG(p,{back=false,big=false}={}){
   const c=p.cols[0].hex, c2=(p.cols[1]||p.cols[0]).hex, ink=lum(c)>.55?"#141414":"#f1ece2";
-  const accent=lum(c)>.55?"#6d28d9":"#a066ff";
+  const accent=document.documentElement.dataset.season==="ren"?(lum(c)>.55?"#8f6214":"#e3b65e"):(lum(c)>.55?"#6d28d9":"#a066ff");
   const sh=p.shape, sleeve=sh==="long";
   const body=sleeve
    ?"M70 40 L112 24 Q150 44 188 24 L230 40 L286 230 L262 238 L222 104 L222 300 L78 300 L78 104 L38 238 L14 230 Z"
@@ -989,14 +1053,11 @@ function pic(p,cls=""){return p.img?`<img class="photo ${cls}" src="${p.img}" al
 const pinSVG=`<svg class="pin" viewBox="0 0 24 60" aria-hidden="true"><rect x="3" y="0" width="8" height="54" rx="2" fill="#c9a77c"/><rect x="13" y="0" width="8" height="54" rx="2" fill="#b8956a"/><rect x="2" y="22" width="20" height="6" rx="1" fill="#8d8a84"/></svg>`;
 /* ---------- card ---------- */
 function priceHTML(p){
-  const off=Math.round((1-p.pix/p.price)*100);
-  return `<span class="price">${off>=10?`<s>${brl(p.price)}</s>`:""}${brl(off>=10?p.pix:p.price)}</span>
-    <span class="pix">${off>=10?`no Pix · −${off}%`:`${brl(p.pix)} no Pix`}</span>`;
+  return `<span class="price">${brl(p.price)}</span>
+    <span class="pix">3+ peças: até ${PIX_MAX}% off no Pix</span>`;
 }
 function badge(p){
   if(!p.ok) return `<span class="badge out">ESGOTADO</span>`;
-  const off=Math.round((1-p.pix/p.price)*100);
-  if(off>=10) return `<span class="badge red">−${off}% NO PIX</span>`;
   return `<span class="badge">${esc(p.type==="Outros"?"NOVO":p.type.toUpperCase())}</span>`;
 }
 function card(p){
@@ -1008,17 +1069,26 @@ function card(p){
 }
 
 /* ---------- anúncio ---------- */
+/* Paleta da estação: liga sozinha até 30/11/2026 (horário de Brasília); depois volta pro roxo automaticamente. */
+const SEASON_END=new Date("2026-12-01T00:00:00-03:00");
+if(Date.now()<SEASON_END.getTime())document.documentElement.dataset.season="ren";
 const FRETE_GRATIS=199;
-/* Desconto no Pix (cartão = preço cheio). 1–2 peças: 5% · a partir da 3ª: 3% por peça a mais · teto 15%.
+/* Desconto no Pix (cartão = preço cheio): 1–2 peças 0% · 3 peças 6% · +3% por peça · teto 15%.
+   Cupom DEZCONTO: 5% na compra inteira (Pix ou cartão). NÃO soma com o Pix: vale o maior.
    A MESMA regra roda no servidor (função create-order) — se mudar aqui, mude lá também. */
-const PIX_BASE=5, PIX_STEP=3, PIX_MAX=15;
-const pixPct=n=>n<=1?PIX_BASE:Math.max(PIX_BASE,Math.min(PIX_MAX,PIX_STEP*(n-1)));
+const PIX_STEP=3, PIX_MAX=15, COUPONS={DEZCONTO:5};
+const pixPct=n=>n<=2?0:Math.min(PIX_MAX,PIX_STEP*(n-1));
+let COUPON=(()=>{try{const c=(localStorage.getItem("nh_coupon")||"").toUpperCase();return COUPONS[c]?c:""}catch(e){return ""}})();
+function setCoupon(c){c=String(c||"").trim().toUpperCase();if(c&&!COUPONS[c])return false;COUPON=c;try{c?localStorage.setItem("nh_coupon",c):localStorage.removeItem("nh_coupon")}catch(e){}return true}
 const r2=v=>Math.round(v*100)/100;
 let PAY=(()=>{try{return localStorage.getItem("nh_pay")==="cartao"?"cartao":"pix"}catch(e){return "pix"}})();
 function cartTotals(){
   const n=CART.reduce((a,i)=>a+i.qty,0), sub=r2(CART.reduce((a,i)=>a+byId(i.id).price*i.qty,0));
-  const pct=pixPct(n), pix=r2(sub*(1-pct/100)), total=PAY==="cartao"?sub:pix;
-  return {n,sub,pct,pix,total,disc:r2(sub-total)};
+  const pixP=pixPct(n), cupP=COUPON?COUPONS[COUPON]:0;
+  const pPix=Math.max(pixP,cupP), pCard=cupP;                      // vale o maior (não soma)
+  const pct=PAY==="cartao"?pCard:pPix, kind=pct===0?"":(PAY==="cartao"||cupP>=pixP?"cupom":"pix");
+  const pix=r2(sub*(1-pPix/100)), total=r2(sub*(1-pct/100));
+  return {n,sub,pct,pix,pixPct:pPix,total,disc:r2(sub-total),kind,coupon:kind==="cupom"?COUPON:""};
 }
 function nextStep(n){for(let k=n+1;k<=n+6;k++){if(pixPct(k)>pixPct(n))return {k,pct:pixPct(k)}}return null}   // valor mínimo (no Pix) para frete grátis
 $("#ibFrete").textContent=brl(FRETE_GRATIS).replace(/,00$/,"");
@@ -1046,7 +1116,7 @@ function heroSlides(){
   const pick=(f)=>live.find(f)||live[0];
   return [
     {eb:"Drop NOHYPE · 2026",h:"Pelo corre.<br><em>Pela cultura.</em>",lead:"Streetwear das marcas que a rua veste, separado peça por peça na nossa arara.",cta:"Comprar agora",go:"all",p:pick(p=>/são jorge/i.test(p.name)&&p.color==="Branca")},
-    {eb:"Pague no Pix",h:"<span class='pill'>5% OFF</span>em todo o site",lead:"Desconto automático no Pix. Algumas peças chegam a mais de 10% off.",cta:"Ver ofertas no Pix",go:"sort:lo",p:pick(p=>/dragon/i.test(p.name)&&p.type==="Polo")},
+    {eb:"Desconto progressivo",h:"<span class='pill'>até 15% OFF</span>no Pix",lead:"Leve 3 peças e ganhe 6% no Pix. A cada peça a mais, +3% — até 15%.",cta:"Montar meu kit",go:"all",p:pick(p=>/dragon/i.test(p.name)&&p.type==="Polo")},
     {eb:"Loja física",h:"Viu aqui,<br><em>tá na arara.</em>",lead:"Mesmo estoque da loja em Perdizes-MG. Reserve pelo WhatsApp e retire no mesmo dia.",cta:"Ver peças disponíveis",go:"all",p:pick(p=>/jesus/i.test(p.name))}
   ];
 }
@@ -1194,9 +1264,9 @@ function renderLine(){
   for(const p of pool){ const k=p.id; if(!seen.has(k)&&pick.length<9){seen.add(k);pick.push(p)} }
   $("#hangers").innerHTML=pick.map((p,i)=>{
     const r=(0.6+((i*37)%10)/10).toFixed(2), d=(-(i*0.73)%3).toFixed(2), dur=(3.2+((i*53)%15)/10).toFixed(2), y=[0,14,4,20,8,0,16,6,12][i%9];
-    return `<a href="#" class="garm" data-open="${p.id}" style="--r:${r}deg;--d:${d}s;--dur:${dur}s;--y:${y}px" aria-label="${esc(p.name)}, ${brl(p.pix)} no Pix">
+    return `<a href="#" class="garm" data-open="${p.id}" style="--r:${r}deg;--d:${d}s;--dur:${dur}s;--y:${y}px" aria-label="${esc(p.name)}, ${brl(p.price)}">
       ${p.img?`${pinSVG}<div class="g photo-card"><img src="${p.img}" alt=""></div>`:`${hangerSVG}<div class="g">${teeSVG(p)}</div>`}
-      <span class="tag"><b>${esc(p.model)}</b>${esc(p.brand)} · ${brl(p.pix)} no Pix<br><em>VER PRODUTO →</em></span></a>`}).join("");
+      <span class="tag"><b>${esc(p.model)}</b>${esc(p.brand)} · ${brl(p.price)}<br><em>VER PRODUTO →</em></span></a>`}).join("");
 }
 
 /* ---------- destaque ---------- */
@@ -1205,7 +1275,7 @@ function renderFeat(){
   const p=PRODUCTS.find(p=>p.ok&&/polo/i.test(p.name)&&/dragon/i.test(p.name)&&p.color==="Preta")||PRODUCTS.find(p=>p.ok);
   $("#feat").innerHTML=(p.img?`<div class="v">${pic(p)}</div><div class="v" style="overflow:hidden"><img src="${p.img}" alt="Detalhe" style="transform:scale(1.9);transform-origin:62% 42%"></div><div class="v" style="overflow:hidden"><img src="${p.img}" alt="Detalhe da gola" style="transform:scale(2.2);transform-origin:30% 22%"></div>`:`<div class="v">${teeSVG(p)}</div><div class="v">${teeSVG(p,{back:true})}</div><div class="v zoom">${teeSVG(p)}</div>`)+`
    <div class="info"><h3 class="h-serif">${esc(p.name)}</h3><p>${esc(p.brand)} · Gola polo em piquet, bordado no peito e acabamento premium.</p>
-   <div class="big-price">${brl(p.price)}</div><div class="pixline"><b>${brl(p.pix)}</b> no Pix</div>
+   <div class="big-price">${brl(p.price)}</div><div class="pixline">Leve 3+ peças: <b>até ${PIX_MAX}% off</b> no Pix</div>
    ${stockHTML(p)}
    <div><div class="lbl" style="margin-bottom:8px">Tamanho</div><div class="sizes" id="featSizes">${SIZES.map(s=>`<button aria-pressed="false">${s}</button>`).join("")}</div></div>
    <button class="btn" id="featAdd" data-id="${p.id}">Adicionar à sacola</button></div>`;
@@ -1259,6 +1329,7 @@ function applyGo(go){
   if(go.startsWith("brand:"))F.brand.add(go.slice(6));
   if(go.startsWith("tipo:"))F.type.add(go.slice(5));
   if(go.startsWith("sort:")){F.sort=go.slice(5);$("#sort").value=F.sort}
+  if(go==="colecao:oversized"){F.type.add("Oversized");F.stock=true;$("#fStock").checked=true;F.sort="rel";$("#sort").value="rel";track("ViewContent",{content_name:"Coleção Oversized",content_type:"product_group"})}
   renderFilterOpts();renderGrid();
 }
 
@@ -1274,7 +1345,7 @@ function openProduct(id,from){
   $("#pm").innerHTML=`<button class="close" data-close aria-label="Fechar">✕</button>
    <div class="gal"><div class="main${p.img?" has-photo":""}" id="pmMain" style="overflow:hidden">${views[0]}</div><div class="thumbs">${views.map((v,i)=>`<button aria-pressed="${i===0}" data-v="${i}" aria-label="${p.img?(p.img2?["Frente","Costas","Detalhe"]:["Foto","Detalhe"])[i]:["Frente","Costas"][i]}" style="overflow:hidden">${v}</button>`).join("")}</div></div>
    <div class="pi"><div class="eyebrow">${esc(p.brand)} · ${esc(p.type)}</div><h3 id="pmTitle">${esc(p.name)}</h3>${p.desc?`<p class="pdesc">${esc(p.desc)}</p>`:""}
-    <div><div class="big-price">${brl(p.price)}</div><div class="pixline"><b>${brl(p.pix)}</b> no Pix (economia de ${brl(p.price-p.pix)})</div></div>
+    <div><div class="big-price">${brl(p.price)}</div><div class="pixline">Leve 3+ peças: <b>até ${PIX_MAX}% off</b> no Pix</div></div>
     ${stockHTML(p)}
     ${p.ok?`<div><div class="lbl" style="margin-bottom:8px">Tamanho</div><div class="sizes" id="pmSizes">${SIZES.map(s=>`<button aria-pressed="false">${s}</button>`).join("")}</div><p class="note" style="margin-top:8px">A grade disponível é confirmada no WhatsApp antes do pagamento. Leve 3+ peças e o desconto no Pix sobe — até ${PIX_MAX}%.</p></div>
     <div class="row" style="align-items:center"><div class="qty" style="flex:0 0 auto;margin:0"><button id="qm" aria-label="Diminuir">−</button><span id="qv">1</span><button id="qp" aria-label="Aumentar">+</button></div>
@@ -1282,7 +1353,7 @@ function openProduct(id,from){
     <a class="btn ghost" id="pmBuy" href="#" target="_blank" rel="noopener">Comprar agora no WhatsApp ↗</a>`
     :`<a class="btn red" href="${waAsk}" target="_blank" rel="noopener">Avise-me quando voltar ↗</a>`}
     ${(()=>{const sg=suggestFor(p,[],3);if(!sg.length)return "";
-      const kit=p.ok?[p,...sg.slice(0,2)]:[];const kSub=r2(kit.reduce((a,x)=>a+x.price,0)),kPct=pixPct(kit.length),kPix=r2(kSub*(1-kPct/100));
+      const kit=p.ok?[p,...sg.slice(0,2)]:[];const kSub=r2(kit.reduce((a,x)=>a+x.price,0)),kPct=Math.max(pixPct(kit.length),COUPON?COUPONS[COUPON]:0),kPix=r2(kSub*(1-kPct/100));
       return `<div><div class="lbl" style="margin-bottom:8px">Combina com</div><div class="sugg" id="pmSugg">${sg.map(suggCard).join("")}</div></div>`+
       (kit.length===3?`<div class="kit"><div class="lbl" style="margin:0">Monte seu kit · 3 peças</div>
         <div class="kt"><span>${esc(kit.map(x=>x.model).join(" + "))}</span></div>
@@ -1298,13 +1369,13 @@ function openProduct(id,from){
     saveCart();track("AddToCart",{content_ids:ids,value:r2(ids.reduce((a,id)=>a+byId(id).price,0))});toast(`Kit adicionado (tam. ${pmSize})`);closeAll();setTimeout(()=>openDrawer("#cart"),250)};
   setURL(p); track("ViewContent",{content_ids:[p.id],content_name:p.name,content_type:"product",value:p.pix});
   $("#pmShare").onclick=async()=>{const url=productURL(p);
-    try{if(navigator.share){await navigator.share({title:p.name+" · NOHYPE",text:`${p.name} — ${brl(p.pix)} no Pix`,url});return}}catch(e){if(e&&e.name==="AbortError")return}
+    try{if(navigator.share){await navigator.share({title:p.name+" · NOHYPE",text:`${p.name} — ${brl(p.price)}`,url});return}}catch(e){if(e&&e.name==="AbortError")return}
     try{await navigator.clipboard.writeText(url);toast("Link copiado")}catch(e){prompt("Copie o link:",url)}};
   if(p.ok)$("#pmBuy").addEventListener("click",async e=>{
     e.preventDefault();
     const btn=$("#pmBuy");if(btn.dataset.busy)return;btn.dataset.busy="1";const txt=btn.textContent;btn.textContent="Abrindo o WhatsApp…";
-    const pct=pixPct(pmQty),sub=r2(p.price*pmQty),code="NH"+Date.now().toString(36).slice(-5).toUpperCase();
-    const o={code,nome:"",tel:"",pay:"pix",pct,subtotal:sub,total:r2(sub*(1-pct/100)),
+    const cupP=COUPON?COUPONS[COUPON]:0,pixP=pixPct(pmQty),pct=Math.max(pixP,cupP),sub=r2(p.price*pmQty),code="NH"+Date.now().toString(36).slice(-5).toUpperCase();
+    const o={code,nome:"",tel:"",pay:"pix",pct,kind:pct?(cupP>=pixP?"cupom":"pix"):"",coupon:cupP>=pixP&&cupP?COUPON:"",subtotal:sub,total:r2(sub*(1-pct/100)),
       items:[{product_id:p.id,name:p.name,size:pmSize||null,qty:pmQty,price:p.price,price_pix:r2(p.price*(1-pct/100))}]};
     track("Contact",{content_ids:[p.id],value:o.total});
     await withTimeout(submitOrder(o),2500);
@@ -1314,7 +1385,7 @@ function openProduct(id,from){
   });
   $$("#pm .thumbs button").forEach(b=>b.onclick=()=>{$("#pmMain").innerHTML=views[+b.dataset.v];$("#pmMain").classList.toggle("has-photo",!!p.img);$$("#pm .thumbs button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
   if(p.ok){
-    const syncBuy=()=>{$("#pmBuy").href=`https://wa.me/${WA}?text=${encodeURIComponent(`Oi! Quero comprar:\n• ${pmQty}x ${p.name}${pmSize?` (tam. ${pmSize})`:""} — ${brl(p.pix*pmQty)} no Pix`)}`};
+    const syncBuy=()=>{$("#pmBuy").href=`https://wa.me/${WA}?text=${encodeURIComponent(`Oi! Quero comprar:\n• ${pmQty}x ${p.name}${pmSize?` (tam. ${pmSize})`:""} — ${brl(r2(p.price*pmQty*(1-Math.max(pixPct(pmQty),COUPON?COUPONS[COUPON]:0)/100)))} no Pix${COUPON&&COUPONS[COUPON]>=pixPct(pmQty)?` (cupom ${COUPON})`:""}`)}`};
     $$("#pmSizes button").forEach(b=>b.onclick=()=>{pmSize=b.textContent;$$("#pmSizes button").forEach(x=>x.setAttribute("aria-pressed",x===b));syncBuy()});
     $("#qm").onclick=()=>{pmQty=Math.max(1,pmQty-1);$("#qv").textContent=pmQty;syncBuy()};
     $("#qp").onclick=()=>{pmQty=Math.min(9,pmQty+1);$("#qv").textContent=pmQty;syncBuy()};
@@ -1347,14 +1418,16 @@ function renderCart(){
     <div class="price mono" style="font-weight:700">${brl(p.price*i.qty)}</div></div>`}).join("")+cartSuggHTML();
   const T=cartTotals(), pix=T.total;
   $$(".paysel button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pay===PAY));
-  $("#payPixHint").textContent=`${T.pct}% off · ${brl(T.pix)}`;
+  $("#payPixHint").textContent=T.pixPct?`${T.pixPct}% off · ${brl(T.pix)}`:"3+ peças: até 15% off";
   $("#cSub").textContent=brl(T.sub);
-  $("#cDiscRow").hidden=PAY==="cartao";
-  $("#cDiscLbl").textContent=`Desconto Pix (${T.pct}%)`; $("#cDisc").textContent="−"+brl(T.disc);
+  $("#cDiscRow").hidden=!T.disc;
+  $("#cDiscLbl").textContent=T.kind==="cupom"?`Cupom ${T.coupon} (${T.pct}%)`:`Desconto Pix (${T.pct}%)`; $("#cDisc").textContent="−"+brl(T.disc);
+  $("#cCoupon").classList.toggle("on",!!COUPON);
+  $("#cCode").value=COUPON||$("#cCode").value; $("#cCodeBtn").textContent=COUPON?"Remover":"Aplicar";
   $("#cTotLbl").textContent=PAY==="cartao"?"Total no cartão":"Total no Pix";
   $("#cPix").textContent=brl(T.total);
   const nx=nextStep(T.n);
-  $("#cNudge").hidden=!nx&&T.pct<PIX_MAX;
+  $("#cNudge").hidden=!nx&&T.pixPct<PIX_MAX;
   $("#cNudge").innerHTML=nx?`Leve <b>+${nx.k-T.n} peça${nx.k-T.n>1?"s":""}</b> e o desconto no Pix sobe pra <b>${nx.pct}%</b>${PAY==="cartao"?" (no Pix)":""}<div class="ladder" aria-hidden="true">${[1,2,3,4,5,6].map(k=>`<i class="${T.n>=k?"on":""}"></i>`).join("")}</div>`
     :`🔥 Desconto máximo liberado: <b>${PIX_MAX}% no Pix</b>`;
   bindCartSugg();
@@ -1375,8 +1448,8 @@ function waMessage(){
     CART.map(i=>{const p=byId(i.id);return `• ${i.qty}x ${p.name} — tam. ${i.size} — ${brl(p.price*i.qty)}`}).join("\n")+
     `\n\nSubtotal: ${brl(T.sub)}`+
     (PAY==="cartao"
-      ? `\nPagamento: cartão de crédito\nTotal no cartão: ${brl(T.total)}${frete}\nPode confirmar a grade e me mandar o link de pagamento?`
-      : `\nDesconto Pix (${T.pct}%): −${brl(T.disc)}\nTotal no Pix: ${brl(T.total)}${frete}\nPode confirmar a grade e me passar a chave Pix?`);
+      ? `\nPagamento: cartão de crédito${T.disc?`\nCupom ${T.coupon} (${T.pct}%): −${brl(T.disc)}`:""}\nTotal no cartão: ${brl(T.total)}${frete}\nPode confirmar a grade e me mandar o link de pagamento?`
+      : `${T.disc?`\n${T.kind==="cupom"?`Cupom ${T.coupon}`:"Desconto Pix"} (${T.pct}%): −${brl(T.disc)}`:""}\nTotal no Pix: ${brl(T.total)}${frete}\nPode confirmar a grade e me passar a chave Pix?`);
 }
 /* ---------- sugestões / kit ---------- */
 function suggestFor(base,excl,k){
@@ -1395,6 +1468,13 @@ function cartSuggHTML(){
 }
 function bindCartSugg(){$$("#cartBody [data-sugg]").forEach(b=>b.onclick=()=>{closeAll(true);openProduct(b.dataset.sugg)})}
 function syncCheckout(){}
+$("#cCodeBtn").addEventListener("click",()=>{
+  if(COUPON){setCoupon("");$("#cCode").value="";toast("Cupom removido");return renderCart()}
+  const c=$("#cCode").value.trim(); if(!c)return toast("Digite o cupom");
+  if(!setCoupon(c))return toast("Cupom inválido");
+  toast(`Cupom ${COUPON} aplicado: ${COUPONS[COUPON]}% off`);renderCart();
+});
+$("#cCode").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("#cCodeBtn").click()}});
 $$(".paysel button").forEach(b=>b.addEventListener("click",()=>{PAY=b.dataset.pay==="cartao"?"cartao":"pix";try{localStorage.setItem("nh_pay",PAY)}catch(e){}renderCart()}));
 const RP_LABEL={processing:"Processando seu pedido",printing:"Imprimindo seu comprovante",complete:"Pedido pronto"};
 const ICO_SPIN=`<svg class="spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>`;
@@ -1414,7 +1494,7 @@ function receiptHTML(o){
    <div class="ln"><span>PEDIDO</span><span>#${o.code}</span></div><div class="ln"><span>DATA</span><span>${dt}</span></div>
    ${o.nome?`<div class="ln"><span>CLIENTE</span><span>${esc(o.nome.toUpperCase().slice(0,22))}</span></div>`:""}<hr>
    ${o.items.map(i=>`<div class="it"><div class="ln"><span>${i.qty}x ${esc(byId(i.product_id).model.toUpperCase())}</span><span>${brl(i.price*i.qty)}</span></div><small>${esc(byId(i.product_id).brand)} · ${esc(byId(i.product_id).color)} · TAM. ${i.size}</small></div>`).join("")}
-   <hr><div class="ln"><span>SUBTOTAL</span><span>${brl(o.subtotal)}</span></div>${o.pay==="cartao"?"":`<div class="ln"><span>DESCONTO PIX ${o.pct}%</span><span>−${brl(o.subtotal-o.total)}</span></div>`}
+   <hr><div class="ln"><span>SUBTOTAL</span><span>${brl(o.subtotal)}</span></div>${o.total<o.subtotal?`<div class="ln"><span>${o.kind==="cupom"?"CUPOM "+o.coupon:"DESCONTO PIX"} ${o.pct}%</span><span>−${brl(o.subtotal-o.total)}</span></div>`:""}
    <div class="ln"><span>FRETE</span><span>${o.total>=FRETE_GRATIS?"GRÁTIS":"A COMBINAR"}</span></div>
    <div class="ln big" style="margin-top:6px"><span>${o.pay==="cartao"?"TOTAL CARTÃO":"TOTAL PIX"}</span><span>${brl(o.total)}</span></div><hr>
    <div class="c" style="font-size:10px">${o.pay==="cartao"?"CARTÃO · LINK DE PAGAMENTO NO WHATSAPP":"PAGAMENTO VIA PIX · GRADE CONFIRMADA NO WHATSAPP"}</div>
@@ -1429,9 +1509,9 @@ function submitOrder(o){
   if(lastSent&&lastSent.sig===sig&&Date.now()-lastSent.at<30*60e3)return lastSent.p;
   const H={apikey:SB_KEY,"Content-Type":"application/json"};
   const legacy=()=>fetch(`${SB_URL}/rest/v1/store_orders`,{method:"POST",keepalive:true,headers:{...H,Authorization:`Bearer ${SB_KEY}`,Prefer:"return=minimal"},
-    body:JSON.stringify({customer_nome:o.nome||"Cliente do site",customer_telefone:o.tel||"-",items:o.items,subtotal:+o.subtotal.toFixed(2),discount_value:+(o.subtotal-o.total).toFixed(2),shipping_value:0,total:+o.total.toFixed(2),status:"pendente",coupon:o.pay==="cartao"?"CARTAO":"PIX-"+o.pct})}).then(r=>r.ok).catch(()=>false);
+    body:JSON.stringify({customer_nome:o.nome||"Cliente do site",customer_telefone:o.tel||"-",items:o.items,subtotal:+o.subtotal.toFixed(2),discount_value:+(o.subtotal-o.total).toFixed(2),shipping_value:0,total:+o.total.toFixed(2),status:"pendente",coupon:o.coupon||null,payment_method:o.pay,discount_pct:o.pct})}).then(r=>r.ok).catch(()=>false);
   const p=fetch(`${SB_URL}/functions/v1/create-order`,{method:"POST",keepalive:true,headers:H,
-    body:JSON.stringify({code:o.code,nome:o.nome,tel:o.tel,payment:o.pay,items:o.items.map(i=>({product_id:i.product_id,size:i.size,qty:i.qty}))})})
+    body:JSON.stringify({code:o.code,nome:o.nome,tel:o.tel,payment:o.pay,coupon:o.coupon||COUPON||"",items:o.items.map(i=>({product_id:i.product_id,size:i.size,qty:i.qty}))})})
     .then(r=>r.ok?true:(r.status>=500?legacy():false)).catch(legacy);
   lastSent={sig,at:Date.now(),p};
   return p;
@@ -1443,7 +1523,7 @@ $("#checkout").addEventListener("click",()=>{
   const T=cartTotals();
   const items=CART.map(i=>{const p=byId(i.id);return {product_id:p.id,name:p.name,size:i.size,qty:i.qty,price:p.price,price_pix:r2(p.price*(1-T.pct/100))}});
   const subtotal=T.sub, total=T.total;
-  rpOrder={code:"NH"+Date.now().toString(36).slice(-5).toUpperCase(),nome:$("#cName").value.trim(),tel:$("#cTel").value.trim(),items,subtotal,total,pay:PAY,pct:T.pct};
+  rpOrder={code:"NH"+Date.now().toString(36).slice(-5).toUpperCase(),nome:$("#cName").value.trim(),tel:$("#cTel").value.trim(),items,subtotal,total,pay:PAY,pct:T.pct,kind:T.kind,coupon:T.coupon};
   $("#rpPaper").innerHTML=receiptHTML(rpOrder);
   $("#rpTotal").textContent=brl(total);
   track("InitiateCheckout",{content_ids:items.map(i=>i.product_id),num_items:items.reduce((a,i)=>a+i.qty,0),value:total});
@@ -1470,7 +1550,7 @@ $("#sq").addEventListener("input",e=>{
   const t=norm(e.target.value).split(/\s+/).filter(Boolean);
   if(!t.length){$("#sRes").innerHTML="";return}
   const R=PRODUCTS.filter(p=>t.every(x=>norm(p.name+" "+p.brand+" "+p.color+" "+p.type).includes(x))).sort((a,b)=>b.ok-a.ok).slice(0,12);
-  $("#sRes").innerHTML=R.length?R.map(p=>`<button class="line-item" style="width:100%;text-align:left" data-open="${p.id}"><div class="th">${pic(p)}</div><div><div class="nm">${esc(p.name)}</div><div class="op">${p.ok?brl(p.pix)+" no Pix":"Esgotado"}</div></div><span>→</span></button>`).join("")
+  $("#sRes").innerHTML=R.length?R.map(p=>`<button class="line-item" style="width:100%;text-align:left" data-open="${p.id}"><div class="th">${pic(p)}</div><div><div class="nm">${esc(p.name)}</div><div class="op">${p.ok?brl(p.price):"Esgotado"}</div></div><span>→</span></button>`).join("")
     :`<div class="cart-empty"><b>Nada</b>Tente outra palavra, tipo “polo” ou “preta”.</div>`;
 });
 
@@ -1517,6 +1597,16 @@ async function refresh(){
     $("#live").classList.add("on");$("#live span").textContent="Estoque ao vivo";
   }catch(e){$("#live").classList.remove("on");$("#live span").textContent="Estoque salvo"}
 }
+/* ---------- pop-up de boas-vindas: 1ª visita, cupom DEZCONTO ---------- */
+(()=>{const W=$("#welcome");let seen=false;try{seen=!!localStorage.getItem("nh_welcome")}catch(e){}
+  const close=()=>{W.classList.remove("on");W.setAttribute("aria-hidden","true");try{localStorage.setItem("nh_welcome","1")}catch(e){}};
+  $$("[data-wclose]",W).forEach(b=>b.onclick=close);W.addEventListener("click",e=>{if(e.target===W)close()});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&W.classList.contains("on"))close()});
+  $("#wApply").onclick=()=>{setCoupon("DEZCONTO");try{navigator.clipboard&&navigator.clipboard.writeText("DEZCONTO")}catch(e){}close();renderCart();toast("Cupom DEZCONTO ativado: 5% off na sacola");track("Lead",{content_name:"cupom DEZCONTO"})};
+  if(seen||COUPON)return;
+  setTimeout(()=>{if($("#modal").classList.contains("on")||$("#rpWrap").classList.contains("on")){setTimeout(()=>{if(!W.classList.contains("on")&&!$("#modal").classList.contains("on"))open()},9000);return}open()},4500);
+  function open(){W.classList.add("on");W.setAttribute("aria-hidden","false");setTimeout(()=>$("#wApply").focus(),200)}
+})();
 refresh(); setInterval(refresh,60000); document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh()});
 })();
 </script>
